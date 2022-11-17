@@ -57,6 +57,9 @@ struct interactive_t {
   int text_end;        /* first free char in buffer               */
   int text_start;      /* where we are up to in user command buffer */
   time_t last_time;    /* time of last command executed           */
+#ifdef PACKAGE_LIMIT
+  unsigned short limit;
+#endif
 #ifndef NO_SNOOP
   struct object_t *snooped_by;
 #endif

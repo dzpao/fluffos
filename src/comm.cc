@@ -64,12 +64,6 @@ static void receive_snoop(const char * /*buf*/, int /*len*/, object_t *ob);
 
 #endif
 
-namespace {
-// User socket event
-struct user_event_data {
-  int idx;
-};
-
 void maybe_schedule_user_command(interactive_t *user) {
   // If user has a complete command, schedule a command execution.
   if (user->iflags & CMD_IN_BUF) {
@@ -78,6 +72,12 @@ void maybe_schedule_user_command(interactive_t *user) {
     evtimer_add(user->ev_command, &zero_sec);
   }
 }
+
+namespace {
+// User socket event
+struct user_event_data {
+  int idx;
+};
 
 void on_user_command(evutil_socket_t fd, short what, void *arg) {
   debug(event, "User has an full command ready: %d:%s%s%s%s \n", (int)fd,
@@ -89,6 +89,12 @@ void on_user_command(evutil_socket_t fd, short what, void *arg) {
     DEBUG_FATAL("on_user_command: user == NULL, Driver BUG.");
     return;
   }
+
+#ifdef PACKAGE_LIMIT
+  if (user->limit) {
+    return;
+  };
+#endif
 
   // FIXME: this function currently calls into mudlib and will throw errors
   // This catch block should be moved one level down.
