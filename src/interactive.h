@@ -59,6 +59,7 @@ struct interactive_t {
   time_t last_time;    /* time of last command executed           */
 #ifdef PACKAGE_LIMIT
   unsigned short limit;
+  unsigned short show_prompt;
 #endif
 #ifndef NO_SNOOP
   struct object_t *snooped_by;

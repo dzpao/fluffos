@@ -257,6 +257,10 @@ interactive_t *new_user(port_def_t *port, evutil_socket_t fd, sockaddr *addr,
   auto base = evconnlistener_get_base(port->ev_conn);
   user->ev_command = evtimer_new(base, on_user_command, user);
 
+#ifdef PACKAGE_LIMIT
+  user->show_prompt = 1;
+#endif
+
   return user;
 }
 
@@ -1214,7 +1218,11 @@ exit:
   /*
    * Print a prompt if user is still here.
    */
+#ifdef PACKAGE_LIMIT
+  if (ip->show_prompt && IP_VALID(ip, command_giver)) {
+#else
   if (IP_VALID(ip, command_giver)) {
+#endif
     if (ip->input_to == nullptr) {
       print_prompt(ip);
     }
